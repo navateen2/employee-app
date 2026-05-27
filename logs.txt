@@ -1,0 +1,2 @@
+2026-05-27 15:12:31 INFO middleware.logger <<127.0.0.1 GET /docs 200 0ms>>
+2026-05-27 15:12:31 INFO middleware.logger <<127.0.0.1 GET /openapi.json 200 4ms>>
