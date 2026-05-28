@@ -5,8 +5,8 @@ import middleware as m
 from contextlib import asynccontextmanager
 from models.employee import Employee
 from database.connection import AsyncSession
-
-from routers.employee_router import router as employee_router
+from employees.router import router as employee_router
+# from routers.employee_router import router as employee_router
 from config import APP_ENV
 
 
