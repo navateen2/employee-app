@@ -1,22 +1,21 @@
 from fastapi import FastAPI,Depends,HTTPException,status,Body
 from typing import TypedDict
-from fastapi.middleware.cors import CORSMiddleware
 import logging
-from middleware.logger import RequestLoggingMiddleware
+import middleware as m
 from contextlib import asynccontextmanager
 from database.connection import create_tables,get_db
 from models.employee import Employee
 from database.connection import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 
 from routers.employee_router import router as employee_router
+from config import APP_ENV
+
+
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
-    filename="logs.txt"
 )
 
 @asynccontextmanager
@@ -30,16 +29,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+m.configure_middleware(app)
 
-app.add_middleware(RequestLoggingMiddleware)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["X-Process-Time"],
-)
 
 # class Employee(TypedDict):
 #     id:int
@@ -56,7 +47,9 @@ E:dict[int,Employee]={}
 def home():
     return "Welcome"
 
-
+@app.get("/health")
+def health():
+    return {"status":"healthy","message":"running","Environment":APP_ENV}
 # @app.get("/Employees",response_model=dict[int,Employee])
 # def a():
 #     return E
@@ -102,30 +95,6 @@ app.include_router(employee_router)
 
 
 
-@app.patch("/employee/{employee_id}", tags=["Employees"])
-async def update_employee(employee_id: int, body: dict = Body(...), db: AsyncSession = Depends(get_db)):
-    stmt = select(Employee).where(Employee.id == employee_id, Employee.deleted_at.is_(None))
-    result = await db.scalar(stmt)
-    if result is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Employee with id {employee_id} not found")
-    employee: Employee = result
-    name = body.get("name")
-    email = body.get("email")
-    if name is not None:
-        if not isinstance(name, str) or not name.strip():
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="name must be a non-empty string")
-        employee.name = name.strip()
-    if email is not None:
-        if not isinstance(email, str) or not email.strip():
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email must be a non-empty string")
-        employee.email = email.strip()
-    try:
-        await db.commit()
-    except IntegrityError:
-        await db.rollback()
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Email '{email.strip()}' is already in use")
-    await db.refresh(employee)
-    return employee.to_api_dict()
 
 
 @app.delete("/employee/{employee_id}", tags=["Employees"])
