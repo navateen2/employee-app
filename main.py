@@ -10,6 +10,8 @@ from database.connection import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
+from routers.employee_router import router as employee_router
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
@@ -95,31 +97,9 @@ def home():
 
 # #     return _posts[id]
 
-
-@app.post("/employee", status_code=status.HTTP_201_CREATED, tags=["Employees"])
-async def create_employee(body: dict = Body(...), db: AsyncSession = Depends(get_db)):
-    name = body.get("name")
-    email = body.get("email")
-    if not isinstance(name, str) or not name.strip():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="name must be a non-empty string")
-    if not isinstance(email, str) or not email.strip():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email must be a non-empty string")
-    db_employee = Employee(name=name.strip(), email=email.strip())
-    db.add(db_employee)
-    try:
-        await db.commit()
-    except IntegrityError:
-        await db.rollback()
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Email '{email.strip()}' is already in use")
-    await db.refresh(db_employee)
-    return db_employee.to_api_dict()
+app.include_router(employee_router)
 
 
-@app.get("/employee", tags=["Employees"])
-async def get_all_employees(db: AsyncSession = Depends(get_db)):
-    stmt = select(Employee).where(Employee.deleted_at.is_(None))
-    result = await db.scalars(stmt)
-    return [r.to_api_dict() for r in result.all()]
 
 
 @app.patch("/employee/{employee_id}", tags=["Employees"])
