@@ -24,7 +24,7 @@ async def all(db:AsyncSession)->list[dict]:
 
 async def update_employee(employee_id: int, name:str,email:str,db: AsyncSession )->Employee:
     stmt = update(Employee).where(Employee.id == employee_id, Employee.deleted_at.is_(None)).values(name=name,email=email)
-    result = await db.scalar(stmt)
+    result = await db.execute(stmt)
     if result is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Employee with id {employee_id} not found")
     try:

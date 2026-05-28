@@ -97,9 +97,9 @@ app.include_router(employee_router)
 
 
 
-@app.delete("/employee/{employee_id}", tags=["Employees"])
-async def delete_employee(id:int, body:dict = Body(...),db:AsyncSession=Depends(get_db)):
-    stmt=delete(Employee).where(Employee.id==id)
-    result = await db.scalar(Employee)
-    db.delete(Employee)
-    db.commit()
+# @app.delete("/employee/{employee_id}", tags=["Employees"])
+# async def delete_employee(id:int, body:dict = Body(...),db:AsyncSession=Depends(get_db)):
+#     stmt=delete(Employee).where(Employee.id==id)
+#     result = await db.scalar(Employee)
+#     db.delete(Employee)
+#     db.commit()

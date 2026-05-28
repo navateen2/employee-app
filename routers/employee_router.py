@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends,Body, HTTPException,status
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.connection import get_db
 import services.employee_service as employee_service
-import pdb
 
 router=APIRouter(prefix="/employee",tags=["Employees"])
 

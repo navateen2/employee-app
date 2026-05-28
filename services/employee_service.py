@@ -23,7 +23,7 @@ async def update_employee(employee_id: int,name:str,email:str, db: AsyncSession)
         if not isinstance(email, str) or not email.strip():
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email must be a non-empty string")
         
-    return employee_repo.update_employee(employee_id,name.strip(),email.strip(),db)
+    return await employee_repo.update_employee(employee_id,name.strip(),email.strip(),db)
 
 async def get_by_id(employee_id:int,db:AsyncSession)->Employee:
     return await employee_repo.get_by_id(employee_id,db)
