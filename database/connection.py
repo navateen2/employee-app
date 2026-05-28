@@ -30,9 +30,43 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 
-async def create_tables() -> None:
-    """Create tables for all ORM models that inherit from Base."""
-    import models.employee  # noqa: F401 — registers the mapper before create_all
+# async def create_tables() -> None:
+#     """Create tables for all ORM models that inherit from Base."""
+#     import models.employee  # noqa: F401 — registers the mapper before create_all
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+#     async with engine.begin() as conn:
+#         await conn.run_sync(Base.metadata.create_all)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+from collections.abc import AsyncGenerator
+
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import declarative_base
+
+from config import DATABASE_URL
+
+Base = declarative_base()
+
+
+engine = create_async_engine(DATABASE_URL, echo=False)
+AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
+
+
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    'One AsyncSession per request; closed after the request.'
+    async with AsyncSessionLocal() as session:
+        yield session"""
