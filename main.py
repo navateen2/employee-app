@@ -3,7 +3,6 @@ from typing import TypedDict
 import logging
 import middleware as m
 from contextlib import asynccontextmanager
-from database.connection import create_tables,get_db
 from models.employee import Employee
 from database.connection import AsyncSession
 
