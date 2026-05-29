@@ -29,7 +29,7 @@ class Employee(Entity):
         "Address",
         back_populates="employee",
     )
-
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     def to_api_dict(self) -> dict[str, Any]:
         """JSON-friendly representation (ISO 8601 for timestamps)."""
         return {
