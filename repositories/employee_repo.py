@@ -5,8 +5,8 @@ from models.employee import Employee
 from sqlalchemy import select,update
 from exceptions import *
 
-async def create(db:AsyncSession,name:str, email:str) -> Employee:
-    db_employee = Employee(name=name.strip(), email=email.strip())
+async def create(db:AsyncSession,name:str, email:str, password_hash:str,age:int) -> Employee:
+    db_employee = Employee(name=name.strip(), email=email.strip(),age=age,password_hash=password_hash)
     db.add(db_employee)
     try:
         await db.commit()
@@ -45,3 +45,13 @@ async def get_by_id(employee_id:int,db:AsyncSession)->Employee:
         # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Employee with id {employee_id} not found")
 
     return result
+
+
+async def get_by_email(db:AsyncSession,email:str)->Employee | None:
+    stmt=select(Employee).where(
+        Employee.email == email,
+        Employee.deleted_at.is_(None),
+    )
+    return db.scalar(stmt).first()
+
+

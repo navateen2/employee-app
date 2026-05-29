@@ -34,11 +34,12 @@ class AddressCreate(BaseModel):
 
 
 class EmployeeCreate(BaseModel):
-    model_config=ConfigDict(str_max_length=10,extra='forbid')
+    model_config=ConfigDict(extra='forbid')
     name:str = Field(min_length=1,max_length=50)
     email:EmailStr
     age:int | None = Field(ge=18,le=150)
     address: AddressCreate | None = None
+    password:str= Field(min_length=6)
 
 
 class EmployeeUpdate:

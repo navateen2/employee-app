@@ -10,9 +10,7 @@ router=APIRouter(prefix="/employee",tags=["Employees"])
 
 @router.post("", status_code=status.HTTP_201_CREATED, tags=["Employees"],response_model=EmployeeResponse)
 async def create_employee(body:EmployeeCreate=Body(...),db: AsyncSession = Depends(get_db)):
-    name = body.name
-    email = body.email
-    employee=await employee_service.create(db,name,email)
+    employee=await employee_service.create(db,body)
     
     return employee
 
