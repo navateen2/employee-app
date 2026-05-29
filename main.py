@@ -1,4 +1,5 @@
-from fastapi import FastAPI,Depends,HTTPException,status,Body
+from fastapi import FastAPI,Request
+from fastapi.responses import JSONResponse
 from typing import TypedDict
 import logging
 import middleware as m
@@ -7,8 +8,8 @@ from models.employee import Employee
 from database.connection import AsyncSession
 from employees.router import router as employee_router
 # from routers.employee_router import router as employee_router
-from config import APP_ENV
-
+from config import settings
+from exceptions.handlers import register_exception_handlers
 
 
 logging.basicConfig(
@@ -28,19 +29,10 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+
 m.configure_middleware(app)
-
-
-# class Employee(TypedDict):
-#     id:int
-#     name:str
-#     # email:str
-#     # department:str
-#     # salary:int
-#     # is_deleted:bool
-
-E:dict[int,Employee]={}
-
+register_exception_handlers(app)
 
 @app.get("/")
 def home():
@@ -48,57 +40,7 @@ def home():
 
 @app.get("/health")
 def health():
-    return {"status":"healthy","message":"running","Environment":APP_ENV}
-# @app.get("/Employees",response_model=dict[int,Employee])
-# def a():
-#     return E
-
-# @app.post("/Employee/add",status_code=201)
-# def create(name:str):
-#     print("hii")
-#     if E:
-#         tid=max(E.keys())+1
-#         E[tid]={"id":tid,"name":name}
-#     else:
-#         E[0]={"id":0,"name":name}
-#     return "end"
-
-# @app.patch("Employee/update")
-# def empl_update():
-#     pass
-# #end point to fetch existing employees
-
-# # @app.get("/hello",tags=["hello world"],response_model=list[str])
-# # def hello():
-# #     l:list[str]=[]
-# #     for i in _posts.keys():
-# #         l.append(_posts[i]["title"])
-# #     return l
-
-# # @app.post("/posts", tags=["Posts"], status_code=201, response_model=PostPublic)
-# # def create_post(post: PostCreate):
-# #     global _next_id
-# #     global _posts
-# #     id = _next_id
-# #     _posts[_next_id] = {
-# #         "id": id,
-# #         "title": post.title,
-# #         "body": post.body
-# #     }
-# #     _next_id += 1
-
-# #     return _posts[id]
+    return {"status":"healthy","message":"running","Environment":settings.app_env}
 
 app.include_router(employee_router)
 
-
-
-
-
-
-# @app.delete("/employee/{employee_id}", tags=["Employees"])
-# async def delete_employee(id:int, body:dict = Body(...),db:AsyncSession=Depends(get_db)):
-#     stmt=delete(Employee).where(Employee.id==id)
-#     result = await db.scalar(Employee)
-#     db.delete(Employee)
-#     db.commit()

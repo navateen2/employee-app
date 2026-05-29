@@ -1,12 +1,12 @@
 """
-Address entity — ORM mapped class for table `Address`.
+Department entity — ORM mapped class for table `Department`.
 """
 
 from datetime import datetime
 from typing import Any, Optional
 
 from sqlalchemy import DateTime, Integer, String, func,ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column,relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from database.connection import Base
 from models.entity import Entity
@@ -18,23 +18,16 @@ def _datetime_to_iso(value: datetime | None) -> str | None:
     return value.isoformat()
 
 
-class Address(Entity):
+class Department(Entity):
     __abstract__=False
-    __tablename__ = "addresses"
-    employee_id: Mapped[int] = mapped_column(
+    __tablename__ = "departments"
+    id: Mapped[int] = mapped_column(
         Integer,
-        ForeignKey("employees.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
-    line1: Mapped[str] = mapped_column(String(100), nullable=False)
-    city: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
-    postal_code: Mapped[int]=mapped_column(Integer,nullable=True)
-    country: Mapped[str] = mapped_column(String(100), nullable=False)
-    employee: Mapped["Employee"] =relationship(
-         "Employee",
-        back_populates="addresses",
-    )
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+
     # def to_api_dict(self) -> dict[str, Any]:
     #     """JSON-friendly representation (ISO 8601 for timestamps)."""
     #     return {

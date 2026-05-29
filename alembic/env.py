@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
-from config import DATABASE_URL
+from config import settings
 from database.connection import Base
 import asyncio
 # Import every ORM module so each Table registers on Base.metadata.
@@ -32,7 +32,7 @@ target_metadata = Base.metadata
 def get_url() -> str:
     """Single source of the DB URL — the app's DATABASE_URL, not a copy in alembic.ini.
     Avoids the classic "migrated the wrong database" mistake of a stale ini URL."""
-    return DATABASE_URL
+    return settings.database_url
 
 
 def run_migrations_offline() -> None:
