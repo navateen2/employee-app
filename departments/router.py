@@ -17,9 +17,9 @@ async def create_department(body:DepartmentCreate=Body(...),db: AsyncSession = D
     return department
 
 
-
+# _current_user:TokenPayload=Depends(get_current_user)
 @router.get("/", tags=["Departments"])
-async def get_all_departments(db: AsyncSession = Depends(get_db),_current_user:TokenPayload=Depends(get_current_user))->list[dict]:
+async def get_all_departments(db: AsyncSession = Depends(get_db),)->list[dict]:
     a=await department_service.all(db)
     
     return a

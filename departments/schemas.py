@@ -8,6 +8,11 @@ class Department(BaseModel):
     name:str = Field(min_length=1,max_length=50)
 
 
+
+class DepartmentCreate(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    name:str = Field(min_length=1,max_length=50)
+
 class DepartmentUpdate(BaseModel):
     name:str
 

@@ -8,11 +8,12 @@ from models.employee import Employee
 from database.connection import AsyncSession
 from employees.router import router as employee_router
 from departments.router import router as department_router
+from employee_department.router import router as ed_router
 # from routers.employee_router import router as employee_router
 from config import settings
 from exceptions.handlers import register_exception_handlers
 from auth.router import router as auth_router
-
+from database.connection import create_tables
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
@@ -21,7 +22,7 @@ logging.basicConfig(
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # await create_tables()
+    await create_tables()
     yield
 
 app = FastAPI(
@@ -46,3 +47,4 @@ def health():
 app.include_router(employee_router)
 app.include_router(department_router)
 app.include_router(auth_router)
+app.include_router(ed_router)

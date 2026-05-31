@@ -17,4 +17,5 @@ async def update_employee(employee_id: int,name:str,email:str, db: AsyncSession)
 async def get_by_id(employee_id:int,db:AsyncSession)->Employee:
     return await employee_repo.get_by_id(employee_id,db)
 
-
+async def deleteEmployee(employee_id:int,db: AsyncSession):
+    return await employee_repo.deleteEmployee(employee_id,db)

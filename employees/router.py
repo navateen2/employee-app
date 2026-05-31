@@ -19,7 +19,7 @@ async def create_employee(body:EmployeeCreate=Body(...),db: AsyncSession = Depen
 
 
 @router.get("/", tags=["Employees"])
-async def get_all_employees(db: AsyncSession = Depends(get_db),_current_user:TokenPayload=Depends(get_current_user))->list[dict]:
+async def get_all_employees(db: AsyncSession = Depends(get_db))->list[dict]:
     a=await employee_service.all(db)
     
     return a
@@ -42,3 +42,8 @@ async def update_employee(employee_id: int, body: dict = Body(...), db: AsyncSes
 async def get_by_id(employee_id:int,db:AsyncSession= Depends(get_db))->dict:
     employee=await employee_service.get_by_id(employee_id,db)
     return employee
+
+
+@router.delete("/{employee_id}", status_code=status.HTTP_201_CREATED, tags=["Employees"])
+async def deleteEmployee(employee_id:int,db: AsyncSession = Depends(get_db),):
+    return await employee_service.deleteEmployee(employee_id,db)

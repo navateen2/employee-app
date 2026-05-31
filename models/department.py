@@ -21,21 +21,15 @@ def _datetime_to_iso(value: datetime | None) -> str | None:
 class Department(Entity):
     __abstract__=False
     __tablename__ = "departments"
-    id: Mapped[int] = mapped_column(
-        Integer,
-        nullable=False,
-        index=True,
-    )
+
     name: Mapped[str] = mapped_column(String(100), nullable=False)
 
-    # def to_api_dict(self) -> dict[str, Any]:
-    #     """JSON-friendly representation (ISO 8601 for timestamps)."""
-    #     return {
-    #         "id": self.id,
-    #         "name": self.name,
-    #         "email": self.email,
-    #         "age": self.age,
-    #         "created_at": _datetime_to_iso(self.created_at),
-    #         "updated_at": _datetime_to_iso(self.updated_at),
-    #         "deleted_at": _datetime_to_iso(self.deleted_at),
-    #     }
+    def to_api_dict(self) -> dict[str, Any]:
+        """JSON-friendly representation (ISO 8601 for timestamps)."""
+        return {
+            "id": self.id,
+            "name": self.name,
+            "created_at": _datetime_to_iso(self.created_at),
+            "updated_at": _datetime_to_iso(self.updated_at),
+            "deleted_at": _datetime_to_iso(self.deleted_at),
+        }

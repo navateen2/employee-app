@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from models.employee import Employee
 from sqlalchemy import select,update
 from exceptions import *
-
+from datetime import datetime,timezone
 async def create(db:AsyncSession,name:str, email:str, password_hash:str,age:int) -> Employee:
     db_employee = Employee(name=name.strip(), email=email.strip(),age=age,password_hash=password_hash)
     db.add(db_employee)
@@ -55,3 +55,18 @@ async def get_by_email(db:AsyncSession,email:str)->Employee | None:
     return await db.scalar(stmt)
 
 
+async def deleteEmployee(employee_id:int,db: AsyncSession):
+    stmt = select(Employee).where(
+        Employee.id == employee_id,
+    )
+    e = await db.scalar(stmt)
+
+    if e is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Employee not found"
+        )
+
+    e.deleted_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(e)

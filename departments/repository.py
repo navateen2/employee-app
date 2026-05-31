@@ -5,8 +5,8 @@ from models.department import Department
 from sqlalchemy import select,update
 from exceptions import *
 
-async def create(db:AsyncSession,name:str, password_hash:str,) -> Department:
-    db_department = Department(name=name.strip(),password_hash=password_hash)
+async def create(db:AsyncSession,name:str) -> Department:
+    db_department = Department(name=name.strip())
     db.add(db_department)
     try:
         await db.commit()
