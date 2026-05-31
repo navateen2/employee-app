@@ -10,7 +10,7 @@ from employees.router import router as employee_router
 # from routers.employee_router import router as employee_router
 from config import settings
 from exceptions.handlers import register_exception_handlers
-
+from auth.router import router as auth_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -43,4 +43,4 @@ def health():
     return {"status":"healthy","message":"running","Environment":settings.app_env}
 
 app.include_router(employee_router)
-
+app.include_router(auth_router)

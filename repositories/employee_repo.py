@@ -52,6 +52,6 @@ async def get_by_email(db:AsyncSession,email:str)->Employee | None:
         Employee.email == email,
         Employee.deleted_at.is_(None),
     )
-    return db.scalar(stmt).first()
+    return await db.scalar(stmt)
 
 

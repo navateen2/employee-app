@@ -4,6 +4,8 @@ from database.connection import get_db
 from employees import service as employee_service
 from employees.schemas import EmployeeCreate,EmployeeUpdate,EmployeeResponse,EmployeeIDResponse
 # import services.employee_service as employee_service
+from auth.schemas import TokenPayload
+from auth.dependencies import get_current_user
 
 router=APIRouter(prefix="/employee",tags=["Employees"])
 
@@ -17,7 +19,7 @@ async def create_employee(body:EmployeeCreate=Body(...),db: AsyncSession = Depen
 
 
 @router.get("/", tags=["Employees"])
-async def get_all_employees(db: AsyncSession = Depends(get_db))->list[dict]:
+async def get_all_employees(db: AsyncSession = Depends(get_db),_current_user:TokenPayload=Depends(get_current_user))->list[dict]:
     a=await employee_service.all(db)
     
     return a
