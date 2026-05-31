@@ -27,7 +27,7 @@ async def get_all_departments(db: AsyncSession = Depends(get_db),_current_user:T
 
 
 @router.patch("/{department_id}", tags=["Departments"])
-async def update_department(department_id: int, body: dict = Body(...), db: AsyncSession = Depends(get_db)):
+async def update_department(department_id: int, body: DepartmentUpdate = Body(...), db: AsyncSession = Depends(get_db)):
 
     name = body.name
 

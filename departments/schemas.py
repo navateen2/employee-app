@@ -8,7 +8,7 @@ class Department(BaseModel):
     name:str = Field(min_length=1,max_length=50)
 
 
-class DepartmentUpdate:
+class DepartmentUpdate(BaseModel):
     name:str
 
 

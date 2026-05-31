@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from models.employee import Employee
 from database.connection import AsyncSession
 from employees.router import router as employee_router
+from departments.router import router as department_router
 # from routers.employee_router import router as employee_router
 from config import settings
 from exceptions.handlers import register_exception_handlers
@@ -43,4 +44,5 @@ def health():
     return {"status":"healthy","message":"running","Environment":settings.app_env}
 
 app.include_router(employee_router)
+app.include_router(department_router)
 app.include_router(auth_router)
