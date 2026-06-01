@@ -11,15 +11,15 @@ router=APIRouter(prefix="/department",tags=["Departments"])
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, tags=["Departments"],response_model=DepartmentResponse)
-async def create_department(body:DepartmentCreate=Body(...),db: AsyncSession = Depends(get_db)):
+async def create_department(body:DepartmentCreate=Body(...),db: AsyncSession = Depends(get_db), _current_user:TokenPayload=Depends(get_current_user)):
     department=await department_service.create(db,body)
     
     return department
 
 
-# _current_user:TokenPayload=Depends(get_current_user)
+#
 @router.get("/", tags=["Departments"])
-async def get_all_departments(db: AsyncSession = Depends(get_db),)->list[dict]:
+async def get_all_departments(db: AsyncSession = Depends(get_db), _current_user:TokenPayload=Depends(get_current_user))->list[dict]:
     a=await department_service.all(db)
     
     return a
@@ -27,7 +27,7 @@ async def get_all_departments(db: AsyncSession = Depends(get_db),)->list[dict]:
 
 
 @router.patch("/{department_id}", tags=["Departments"])
-async def update_department(department_id: int, body: DepartmentUpdate = Body(...), db: AsyncSession = Depends(get_db)):
+async def update_department(department_id: int, body: DepartmentUpdate = Body(...), db: AsyncSession = Depends(get_db), _current_user:TokenPayload=Depends(get_current_user)):
 
     name = body.name
 
@@ -37,6 +37,6 @@ async def update_department(department_id: int, body: DepartmentUpdate = Body(..
     return department
 
 @router.get("/{department_id}", tags=["Departments"],response_model=DepartmentIDResponse)
-async def get_by_id(department_id:int,db:AsyncSession= Depends(get_db))->dict:
+async def get_by_id(department_id:int,db:AsyncSession= Depends(get_db), _current_user:TokenPayload=Depends(get_current_user))->dict:
     department=await department_service.get_by_id(department_id,db)
     return department

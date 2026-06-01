@@ -11,7 +11,7 @@ router=APIRouter(prefix="/employee",tags=["Employees"])
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, tags=["Employees"],response_model=EmployeeResponse)
-async def create_employee(body:EmployeeCreate=Body(...),db: AsyncSession = Depends(get_db)):
+async def create_employee(body:EmployeeCreate=Body(...),db: AsyncSession = Depends(get_db), _current_user:TokenPayload=Depends(get_current_user)):
     employee=await employee_service.create(db,body)
     
     return employee
@@ -19,7 +19,7 @@ async def create_employee(body:EmployeeCreate=Body(...),db: AsyncSession = Depen
 
 
 @router.get("/", tags=["Employees"])
-async def get_all_employees(db: AsyncSession = Depends(get_db))->list[dict]:
+async def get_all_employees(db: AsyncSession = Depends(get_db), _current_user:TokenPayload=Depends(get_current_user))->list[dict]:
     a=await employee_service.all(db)
     
     return a
@@ -27,7 +27,7 @@ async def get_all_employees(db: AsyncSession = Depends(get_db))->list[dict]:
 
 
 @router.patch("/{employee_id}", tags=["Employees"])
-async def update_employee(employee_id: int, body: dict = Body(...), db: AsyncSession = Depends(get_db)):
+async def update_employee(employee_id: int, body: dict = Body(...), db: AsyncSession = Depends(get_db), _current_user:TokenPayload=Depends(get_current_user)):
     
     
     name = body.name
@@ -39,11 +39,11 @@ async def update_employee(employee_id: int, body: dict = Body(...), db: AsyncSes
     return employee
 
 @router.get("/{employee_id}", tags=["Employees"],response_model=EmployeeIDResponse)
-async def get_by_id(employee_id:int,db:AsyncSession= Depends(get_db))->dict:
+async def get_by_id(employee_id:int,db:AsyncSession= Depends(get_db), _current_user:TokenPayload=Depends(get_current_user))->dict:
     employee=await employee_service.get_by_id(employee_id,db)
     return employee
 
 
 @router.delete("/{employee_id}", status_code=status.HTTP_201_CREATED, tags=["Employees"])
-async def deleteEmployee(employee_id:int,db: AsyncSession = Depends(get_db),):
+async def deleteEmployee(employee_id:int,db: AsyncSession = Depends(get_db), _current_user:TokenPayload=Depends(get_current_user)):
     return await employee_service.deleteEmployee(employee_id,db)
