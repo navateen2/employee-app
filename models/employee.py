@@ -11,11 +11,20 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database.connection import Base
 from models.entity import Entity
 from models.address import Address
+import enum
+from sqlalchemy import Enum
 
 def _datetime_to_iso(value: datetime | None) -> str | None:
     if value is None:
         return None
     return value.isoformat()
+
+class EmployeeRole(str,enum.Enum):
+    UI="UI"
+    UX="UX"
+    DEVELOPER = "Developer"
+    HR = "HR"
+
 
 
 class Employee(Entity):
@@ -30,6 +39,13 @@ class Employee(Entity):
         back_populates="employee",
     )
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+
+    role: Mapped[EmployeeRole] = mapped_column(
+        Enum(EmployeeRole, name="employeerole",values_callable=lambda enum_cls: [e.value for e in enum_cls]),
+        nullable = False,
+        server_default=EmployeeRole.DEVELOPER.value
+    )
+
     def to_api_dict(self) -> dict[str, Any]:
         """JSON-friendly representation (ISO 8601 for timestamps)."""
         return {
@@ -41,3 +57,6 @@ class Employee(Entity):
             "updated_at": _datetime_to_iso(self.updated_at),
             "deleted_at": _datetime_to_iso(self.deleted_at),
         }
+    
+
+
