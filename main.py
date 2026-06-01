@@ -14,6 +14,7 @@ from config import settings
 from exceptions.handlers import register_exception_handlers
 from auth.router import router as auth_router
 from database.connection import create_tables
+from address.router import router as address_router
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
@@ -48,3 +49,4 @@ app.include_router(employee_router)
 app.include_router(department_router)
 app.include_router(auth_router)
 app.include_router(ed_router)
+app.include_router(address_router)
