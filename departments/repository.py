@@ -3,7 +3,8 @@ from sqlalchemy.exc import IntegrityError
 from models.department import Department
 from sqlalchemy import select, update
 from exceptions import NotFoundException, ConflictException
-
+from fastapi import HTTPException, status
+from datetime import datetime,timezone
 
 async def create(db: AsyncSession, name: str) -> Department:
     db_department = Department(name=name.strip())
@@ -53,3 +54,18 @@ async def get_by_id(department_id: int, db: AsyncSession) -> Department:
         # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Department with id {department_id} not found")
 
     return result
+
+async def delete(department_id: int, db: AsyncSession):
+    stmt = select(Department).where(
+        Department.id == department_id,
+    )
+    e = await db.scalar(stmt)
+
+    if e is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found"
+        )
+
+    e.deleted_at = datetime.now(timezone.utc)
+    await db.commit()
+    await db.refresh(e)

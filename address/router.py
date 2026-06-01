@@ -11,7 +11,9 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone
 from address.schemas import *
-
+from auth.schemas import TokenPayload
+from auth.dependencies import get_current_user,require_role
+from models.employee import EmployeeRole
 router = APIRouter(prefix="", tags=["Employees"])
 
 
@@ -19,11 +21,14 @@ router = APIRouter(prefix="", tags=["Employees"])
     "/{employee_id}/addresses/{address_id}",
     status_code=status.HTTP_201_CREATED,
     tags=["Addresses"],
+    dependencies=[Depends(require_role(EmployeeRole.HR))]
+
 )
 async def deleteEmployeeAddress(
     employee_id: int,
     address_id: int,
     db: AsyncSession = Depends(get_db),
+    _current_user: TokenPayload = Depends(get_current_user)
 ):
 
     stmt = select(Address).where(
@@ -47,12 +52,14 @@ async def deleteEmployeeAddress(
 
 
 @router.post(
-    "/{employee_id}/addresses/", status_code=status.HTTP_201_CREATED, tags=["Addresses"]
+    "/{employee_id}/addresses/", status_code=status.HTTP_201_CREATED, tags=["Addresses"],dependencies=[Depends(require_role(EmployeeRole.HR))]
+
 )
 async def createEmployeeAddress(
     employee_id: int,
     body: AddessCreate = Body(...),
     db: AsyncSession = Depends(get_db),
+    _current_user: TokenPayload = Depends(get_current_user)
 ):
 
     addr = Address(

@@ -19,5 +19,11 @@ async def update_department(
     return await repository.update_department(department_id, name.strip(), db)
 
 
+async def delete(
+    department_id: int, db: AsyncSession
+):
+    return await repository.delete(department_id, db)
+
+
 async def get_by_id(department_id: int, db: AsyncSession) -> Department:
     return await repository.get_by_id(department_id, db)

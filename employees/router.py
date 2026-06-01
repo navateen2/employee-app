@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Body, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.connection import get_db
 from employees import service as employee_service
-from employees.schemas import EmployeeCreate, EmployeeResponse, EmployeeIDResponse
+from employees.schemas import EmployeeCreate, EmployeeResponse, EmployeeIDResponse,EmployeeUpdate
 
 # import services.employee_service as employee_service
 from auth.schemas import TokenPayload
@@ -30,7 +30,7 @@ async def create_employee(
 
 
 @router.get(
-    "/", tags=["Employees"], dependencies=[Depends(require_role(EmployeeRole.HR))]
+    "/", tags=["Employees"]
 )
 async def get_all_employees(
     db: AsyncSession = Depends(get_db),
@@ -48,15 +48,13 @@ async def get_all_employees(
 )
 async def update_employee(
     employee_id: int,
-    body: dict = Body(...),
+    body: EmployeeUpdate = Body(...),
     db: AsyncSession = Depends(get_db),
     _current_user: TokenPayload = Depends(get_current_user),
 ):
 
-    name = body.name
-    email = body.email
 
-    employee = await employee_service.update_employee(employee_id, name, email, db)
+    employee = await employee_service.update_employee(employee_id, body, db)
 
     return employee
 
@@ -65,7 +63,6 @@ async def update_employee(
     "/{employee_id}",
     tags=["Employees"],
     response_model=EmployeeIDResponse,
-    dependencies=[Depends(require_role(EmployeeRole.HR))],
 )
 async def get_by_id(
     employee_id: int,

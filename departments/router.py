@@ -8,10 +8,10 @@ from departments.schemas import (
     DepartmentResponse,
     DepartmentIDResponse,
 )
-
+from models.employee import EmployeeRole
 # import services.employee_service as employee_service
 from auth.schemas import TokenPayload
-from auth.dependencies import get_current_user
+from auth.dependencies import get_current_user,require_role
 
 router = APIRouter(prefix="/department", tags=["Departments"])
 
@@ -21,6 +21,8 @@ router = APIRouter(prefix="/department", tags=["Departments"])
     status_code=status.HTTP_201_CREATED,
     tags=["Departments"],
     response_model=DepartmentResponse,
+    dependencies=[Depends(require_role(EmployeeRole.HR))]
+    
 )
 async def create_department(
     body: DepartmentCreate = Body(...),
@@ -43,7 +45,8 @@ async def get_all_departments(
     return a
 
 
-@router.patch("/{department_id}", tags=["Departments"])
+@router.patch("/{department_id}", tags=["Departments"],
+    dependencies=[Depends(require_role(EmployeeRole.HR))])
 async def update_department(
     department_id: int,
     body: DepartmentUpdate = Body(...),
@@ -67,4 +70,16 @@ async def get_by_id(
     _current_user: TokenPayload = Depends(get_current_user),
 ) -> dict:
     department = await department_service.get_by_id(department_id, db)
+    return department
+
+@router.delete(
+    "/{department_id}", tags=["Departments"],
+    dependencies=[Depends(require_role(EmployeeRole.HR))]
+)
+async def delete(
+    department_id: int,
+    db: AsyncSession = Depends(get_db),
+    _current_user: TokenPayload = Depends(get_current_user),
+) -> dict:
+    department = await department_service.delete(department_id, db)
     return department

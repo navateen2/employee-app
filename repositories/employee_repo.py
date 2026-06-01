@@ -31,12 +31,12 @@ async def all(db: AsyncSession) -> list[dict]:
 
 
 async def update_employee(
-    employee_id: int, name: str, email: str, db: AsyncSession
+    employee_id: int, body, db: AsyncSession
 ) -> Employee:
     stmt = (
         update(Employee)
         .where(Employee.id == employee_id, Employee.deleted_at.is_(None))
-        .values(name=name, email=email)
+        .values(name=body.name, email=body.email)
     )
     result = await db.execute(stmt)
     if result is None:
