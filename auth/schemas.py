@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,ConfigDict
 
 
 class TokenResponse(BaseModel):
@@ -17,3 +17,8 @@ class TokenPayload(BaseModel):
     id: int
     email: str
     role: str
+
+class RefreshTokenPayload(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra="ignore")
+
+    refresh_token: str
