@@ -11,5 +11,6 @@ async def login(db:AsyncSession, email:str, password:str)->str:
         raise UnauthorizedException("Invalid email or password")
     return create_access_token({
         "id":employee.id,
-        "email":employee.email
+        "email":employee.email,
+        "role":employee.role.value
     })

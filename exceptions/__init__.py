@@ -21,4 +21,5 @@ class BadRequestException(AppException):
 
 class UnauthorizedException(AppException):
     """wrong password"""
-    
+class ForbiddenException(AppException):
+    "Non existing role"
