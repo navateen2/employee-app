@@ -1,18 +1,19 @@
 from pydantic import BaseModel
 
+
 class TokenResponse(BaseModel):
     access_token: str
-    token_type:str = "bearer"
-
+    token_type: str = "bearer"
 
 
 class LoginRequest(BaseModel):
     email: str
     password: str
 
+
 class TokenPayload(BaseModel):
     """Decoded JWT payload."""
 
     id: int
     email: str
-    role:str
+    role: str

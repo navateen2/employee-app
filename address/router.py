@@ -1,29 +1,35 @@
 # - Delete address of an employee -> /{employee_id}/addresses/{address_id}
 
-from fastapi import APIRouter, Depends,Body, HTTPException,status
+from fastapi import APIRouter, Depends, Body, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.connection import get_db
-from employees import service as employee_service
-from employees.schemas import EmployeeCreate,EmployeeUpdate,EmployeeResponse,EmployeeIDResponse
+
 # import services.employee_service as employee_service
-from auth.schemas import TokenPayload
-from auth.dependencies import get_current_user
 from models.address import Address
 from exceptions import *
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime,timezone
+from datetime import datetime, timezone
 from address.schemas import *
-router=APIRouter(prefix="",tags=["Employees"])
+
+router = APIRouter(prefix="", tags=["Employees"])
 
 
-@router.delete("/{employee_id}/addresses/{address_id}", status_code=status.HTTP_201_CREATED, tags=["Addresses"])
-async def deleteEmployeeAddress(employee_id:int,address_id:int,db: AsyncSession = Depends(get_db),):
+@router.delete(
+    "/{employee_id}/addresses/{address_id}",
+    status_code=status.HTTP_201_CREATED,
+    tags=["Addresses"],
+)
+async def deleteEmployeeAddress(
+    employee_id: int,
+    address_id: int,
+    db: AsyncSession = Depends(get_db),
+):
 
     stmt = select(Address).where(
         Address.employee_id == employee_id,
         Address.id == address_id,
-        Address.deleted_at.is_(None)
+        Address.deleted_at.is_(None),
     )
 
     a = await db.scalar(stmt)
@@ -31,7 +37,7 @@ async def deleteEmployeeAddress(employee_id:int,address_id:int,db: AsyncSession 
     if a is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Employee-Address association not found"
+            detail="Employee-Address association not found",
         )
 
     a.deleted_at = datetime.now(timezone.utc)
@@ -40,15 +46,21 @@ async def deleteEmployeeAddress(employee_id:int,address_id:int,db: AsyncSession 
     return "success"
 
 
-@router.post("/{employee_id}/addresses/", status_code=status.HTTP_201_CREATED, tags=["Addresses"])
-async def createEmployeeAddress(employee_id:int,body:AddessCreate=Body(...),db: AsyncSession = Depends(get_db),):
+@router.post(
+    "/{employee_id}/addresses/", status_code=status.HTTP_201_CREATED, tags=["Addresses"]
+)
+async def createEmployeeAddress(
+    employee_id: int,
+    body: AddessCreate = Body(...),
+    db: AsyncSession = Depends(get_db),
+):
 
-    addr=Address(
+    addr = Address(
         employee_id=body.employee_id,
-        line1 = body.line1,
-        city= body.city,
+        line1=body.line1,
+        city=body.city,
         postal_code=body.postal_code,
-        country=body.country
+        country=body.country,
     )
 
     db.add(addr)
@@ -64,7 +76,7 @@ async def createEmployeeAddress(employee_id:int,body:AddessCreate=Body(...),db: 
     if a is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Employee-Address association not found"
+            detail="Employee-Address association not found",
         )
 
     a.deleted_at = datetime.now(timezone.utc)

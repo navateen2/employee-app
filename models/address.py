@@ -3,12 +3,10 @@ Address entity — ORM mapped class for table `Address`.
 """
 
 from datetime import datetime
-from typing import Any, Optional
 
-from sqlalchemy import DateTime, Integer, String, func,ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column,relationship
+from sqlalchemy import Integer, String, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.connection import Base
 from models.entity import Entity
 
 
@@ -19,7 +17,7 @@ def _datetime_to_iso(value: datetime | None) -> str | None:
 
 
 class Address(Entity):
-    __abstract__=False
+    __abstract__ = False
     __tablename__ = "addresses"
     employee_id: Mapped[int] = mapped_column(
         Integer,
@@ -29,10 +27,10 @@ class Address(Entity):
     )
     line1: Mapped[str] = mapped_column(String(100), nullable=False)
     city: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
-    postal_code: Mapped[int]=mapped_column(Integer,nullable=True)
+    postal_code: Mapped[int] = mapped_column(Integer, nullable=True)
     country: Mapped[str] = mapped_column(String(100), nullable=False)
-    employee: Mapped["Employee"] =relationship(
-         "Employee",
+    employee: Mapped["Employee"] = relationship(  # noqa: F821
+        "Employee",
         back_populates="addresses",
     )
     # def to_api_dict(self) -> dict[str, Any]:

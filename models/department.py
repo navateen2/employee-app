@@ -3,12 +3,11 @@ Department entity — ORM mapped class for table `Department`.
 """
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
-from sqlalchemy import DateTime, Integer, String, func,ForeignKey
+from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database.connection import Base
 from models.entity import Entity
 
 
@@ -19,7 +18,7 @@ def _datetime_to_iso(value: datetime | None) -> str | None:
 
 
 class Department(Entity):
-    __abstract__=False
+    __abstract__ = False
     __tablename__ = "departments"
 
     name: Mapped[str] = mapped_column(String(100), nullable=False)

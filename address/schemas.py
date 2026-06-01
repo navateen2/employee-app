@@ -1,8 +1,9 @@
-from pydantic import BaseModel,Field,field_validator,ConfigDict,EmailStr,model_validator
+from pydantic import BaseModel
+
 
 class AddessCreate(BaseModel):
-    employee_id:int
-    line1:str
-    city:str
-    country:str
-    postal_code:int
+    employee_id: int
+    line1: str
+    city: str
+    country: str
+    postal_code: int
