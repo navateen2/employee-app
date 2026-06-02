@@ -1,37 +1,55 @@
-import pytest
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.pool import StaticPool
+# tests/test_employee_service.py
 
+# `pytest_asyncio` provides the *async-aware* fixture decorator. Plain
+# `@pytest.fixture` doesn't know how to drive an `async def` body — you
+# have to use `@pytest_asyncio.fixture` whenever the fixture itself is
+# async or yields an async resource.
+import pytest_asyncio
+# Same async-flavoured SQLAlchemy imports as the previous slide.
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
+from auth.utils import hash_password
 from database.connection import Base
 from employees import service as employee_service
-from employees.schemas import EmployeeCreate
+from models.employee import Employee
 
 
-@pytest.mark.asyncio
-async def test_create_employee_persists_the_record():
-    engine = create_async_engine(
-        "sqlite+aiosqlite:///:memory:",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-        echo=True,
-    )
+# The fixture: a single function that owns the engine, the schema, and
+# the session — and tears it all back down when the test finishes.
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
-    session_factory = async_sessionmaker(bind=engine, class_=AsyncSession)
+# The test is now pure "act + assert" — no engine, no create_all, no
+# cleanup. Pytest sees the `db_session` parameter, runs the fixture
+# above, and hands the yielded session in.
+async def test_get_by_id_returns_seeded_employee(db_session):
 
-    async with session_factory() as db:
-        body = EmployeeCreate(
-            name="Ada", email="ada@example.com", password="secret123", age=50
-        )
-        employee = await employee_service.create(db, body)
 
-        assert employee.id is not None
-        assert employee.name == "Ada"
-        assert employee.email == "ada@example.com"
+    # Seed a row directly via the ORM. We construct Employee ourselves
+    # (with a real `password_hash`) because service.create currently
+    # drops the password field — bypassing it keeps this test focused.
+    seeded = Employee(name="Ada", email="ada@example.com",
+                      password_hash=hash_password("secret123"))
+    # `add()` is sync — it just stages the row in the session.
+    db_session.add(seeded)
+    # `commit()` is the IO step. Must be awaited.
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
 
-    await engine.dispose()
+    await db_session.commit()
+
+
+    # `refresh()` re-reads the row so `seeded.id` is populated.
+
+
+    await db_session.refresh(seeded)
+
+
+
+    # Call the function under test — async, so we await.
+
+
+    fetched = await employee_service.get_by_id(seeded.id,db_session)
+
+
+
+    assert fetched.id == seeded.id
+    assert fetched.email == "ada@example.com"

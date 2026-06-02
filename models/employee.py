@@ -57,6 +57,7 @@ class Employee(Entity):
             "name": self.name,
             "email": self.email,
             "age": self.age,
+            "role": self.role,
             "created_at": _datetime_to_iso(self.created_at),
             "updated_at": _datetime_to_iso(self.updated_at),
             "deleted_at": _datetime_to_iso(self.deleted_at),

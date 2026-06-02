@@ -9,13 +9,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env")
     database_url: str
     app_env: str = "development"
     debug: bool = False
-    model_config = SettingsConfigDict(env_file=".env")
     jwt_secret: str
     jwt_algorithm: str
-    jwt_expiry_minutes: int
+    jwt_expiry_minutes:int
+    jwt_refresh_token_expire_minutes: int
 
 
 settings = Settings()

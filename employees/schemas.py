@@ -7,7 +7,7 @@ from pydantic import (
     model_validator,
 )
 from datetime import datetime
-
+from models.address import Address
 
 class AddressCreate(BaseModel):
     country: str
@@ -64,6 +64,10 @@ class EmployeeResponse(BaseModel):
 
 class EmployeeIDResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+    name:str
+    email:EmailStr
+    age:int|None
+    # addresses:list[Address]
     created_at: datetime
     updated_at: datetime
-    deleted_at: datetime
+    deleted_at: datetime|None

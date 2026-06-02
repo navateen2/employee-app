@@ -12,8 +12,8 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 async def login(
     body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
-    token = await auth_service.login(db, body.username, body.password)
-    return TokenResponse(access_token=token)
+    rt,at = await auth_service.login(db, body.username, body.password)
+    return TokenResponse(access_token=at,refresh_token=rt)
 
 
 @router.post("/refresh", response_model=TokenResponse)
