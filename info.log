@@ -1,4 +1,0 @@
-2026-06-01 16:17:43 INFO middleware.logger <<127.0.0.1 GET /docs 200 0ms>>
-2026-06-01 16:17:44 INFO middleware.logger <<127.0.0.1 GET /openapi.json 200 29ms>>
-2026-06-01 16:17:52 INFO auth.service User user@example.com logged in successfully
-2026-06-01 16:17:52 INFO middleware.logger <<127.0.0.1 POST /auth/login 200 271ms>>
