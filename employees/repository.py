@@ -53,15 +53,15 @@ async def update_employee(
 
 
 async def get_by_id(employee_id: int, db: AsyncSession) -> Employee:
-    stmt = select(Employee).where(Employee.id == employee_id)
+    stmt = select(Employee).where(Employee.id == employee_id,Employee.deleted_at.is_(None))
     result = await db.scalar(stmt)
     if result is None:
         raise NotFoundException(detail=f"User with id {employee_id}  not found")
         # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Employee with id {employee_id} not found")
-    # stmt = select(Address).where(employee_id=Address.employee_id)
-    # adds=await db.scalar(stmt)
-    # result=result.to_api_dict()
-    # result["addresses"]=adds
+    stmt = select(Address).where(Address.employee_id==employee_id)
+    adds=await db.scalar(stmt)
+    result=result.to_api_dict()
+    result["addresses"]=[adds]
     return result
 
 

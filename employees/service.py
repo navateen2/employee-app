@@ -24,7 +24,7 @@ async def update_employee(
     )
 
 
-async def get_by_id(employee_id: int, db: AsyncSession) -> Employee:
+async def get_by_id(employee_id: int, db: AsyncSession) -> dict:
     return await repository.get_by_id(employee_id, db)
 
 
