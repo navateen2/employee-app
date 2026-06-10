@@ -60,5 +60,5 @@ class Employee(Entity):
             "role": self.role,
             "created_at": _datetime_to_iso(self.created_at),
             "updated_at": _datetime_to_iso(self.updated_at),
-            "deleted_at": _datetime_to_iso(self.deleted_at),
+            # "deleted_at": _datetime_to_iso(self.deleted_at),
         }

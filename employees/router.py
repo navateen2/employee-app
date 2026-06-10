@@ -62,7 +62,7 @@ async def update_employee(
 @router.get(
     "/{employee_id}",
     tags=["Employees"],
-    response_model=EmployeeIDResponse,
+    # response_model=EmployeeIDResponse,
 )
 async def get_by_id(
     employee_id: int,

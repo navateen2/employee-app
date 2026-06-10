@@ -62,6 +62,7 @@ async def get_by_id(employee_id: int, db: AsyncSession) -> Employee:
     adds=await db.scalar(stmt)
     result=result.to_api_dict()
     result["addresses"]=[adds]
+    print("debug::::",result)
     return result
 
 

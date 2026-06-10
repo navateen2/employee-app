@@ -80,6 +80,6 @@ async def delete(
     department_id: int,
     db: AsyncSession = Depends(get_db),
     _current_user: TokenPayload = Depends(get_current_user),
-) -> dict:
-    department = await department_service.delete(department_id, db)
-    return department
+) :
+    await department_service.delete(department_id, db)
+    

@@ -26,4 +26,4 @@ class DepartmentIDResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     created_at: datetime
     updated_at: datetime
-    deleted_at: datetime
+    deleted_at: datetime|None

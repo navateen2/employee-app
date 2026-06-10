@@ -70,4 +70,4 @@ class EmployeeIDResponse(BaseModel):
     addresses:list[AddressCreate]
     created_at: datetime
     updated_at: datetime
-    deleted_at: datetime|None
+    deleted_at: datetime | None

@@ -37,7 +37,7 @@ async def createEmployeeDepartment(
     except IntegrityError:
         await db.rollback()
         # raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"Email '{email.strip()}' is already in use")
-        raise ConflictException
+        raise ConflictException(detail="Department or employee doesnt exist")
     await db.refresh(db_ed)
     return db_ed
 

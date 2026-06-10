@@ -22,7 +22,7 @@ async def update_department(
 async def delete(
     department_id: int, db: AsyncSession
 ):
-    return await repository.delete(department_id, db)
+    await repository.delete(department_id, db)
 
 
 async def get_by_id(department_id: int, db: AsyncSession) -> Department:
