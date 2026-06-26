@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     jwt_algorithm: str
     jwt_expiry_minutes:int
     jwt_refresh_token_expire_minutes: int
+    OPENAI_API_KEY:str
+    OPENAI_BASE_URL:str
 
 
 settings = Settings()

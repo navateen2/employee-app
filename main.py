@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from employees.router import router as employee_router
 from departments.router import router as department_router
 from employee_department.router import router as ed_router
-
+from chatbot.router2 import router as chatbot
 # from routers.employee_router import router as employee_router
 from config import settings
 from exceptions.handlers import register_exception_handlers
@@ -54,3 +54,4 @@ app.include_router(department_router)
 app.include_router(auth_router)
 app.include_router(ed_router)
 app.include_router(address_router)
+app.include_router(chatbot)
