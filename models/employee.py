@@ -25,6 +25,10 @@ class EmployeeRole(str, enum.Enum):
     UX = "UX"
     DEVELOPER = "Developer"
     HR = "HR"
+class EmployeeStatus(str,enum.Enum):
+    Active="Active"
+    Inactive="Inactive"
+    Probation="Probation"
 
 
 class Employee(Entity):
@@ -50,6 +54,13 @@ class Employee(Entity):
         server_default=EmployeeRole.DEVELOPER.value,
     )
 
+    status: Mapped[EmployeeStatus] = mapped_column(
+        Enum(EmployeeStatus,name="employeestatus",values_callable=lambda enum_cls: [e.value for e in enum_cls]),
+        nullable=False,
+        server_default=EmployeeStatus.Active.value
+    )
+
+
     def to_api_dict(self) -> dict[str, Any]:
         """JSON-friendly representation (ISO 8601 for timestamps)."""
         return {
@@ -58,6 +69,7 @@ class Employee(Entity):
             "email": self.email,
             "age": self.age,
             "role": self.role,
+            "status":self.status,
             "created_at": _datetime_to_iso(self.created_at),
             "updated_at": _datetime_to_iso(self.updated_at),
             # "deleted_at": _datetime_to_iso(self.deleted_at),

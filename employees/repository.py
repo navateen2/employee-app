@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from models.employee import Employee
+from models.employee import Employee, EmployeeStatus
 from models.address import Address
 from sqlalchemy import select, update
 from exceptions import ConflictException, NotFoundException
@@ -25,8 +25,11 @@ async def create(
     return db_employee
 
 
-async def all(db: AsyncSession) -> list[dict]:
+async def all(db: AsyncSession,status) -> list[dict]:
     stmt = select(Employee).where(Employee.deleted_at.is_(None))
+    if status is not None:
+        stmt = stmt.where(Employee.status == EmployeeStatus(status))
+
     result = await db.scalars(stmt)
     return [r.to_api_dict() for r in result.all()]
 

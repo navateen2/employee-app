@@ -1,6 +1,6 @@
 import employees.repository as repository
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.employee import Employee
+from models.employee import Employee, EmployeeStatus
 from auth.utils import hash_password
 
 
@@ -12,8 +12,8 @@ async def create(db: AsyncSession, body) -> Employee:
     return employee
 
 
-async def all(db: AsyncSession) -> list[dict]:
-    return await repository.all(db)
+async def all(db: AsyncSession,status) -> list[dict]:
+    return await repository.all(db,status)
 
 
 async def update_employee(

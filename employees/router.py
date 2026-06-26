@@ -33,10 +33,11 @@ async def create_employee(
     "/", tags=["Employees"]
 )
 async def get_all_employees(
+    status: str | None = None,
     db: AsyncSession = Depends(get_db),
     _current_user: TokenPayload = Depends(get_current_user),
 ) -> list[dict]:
-    a = await employee_service.all(db)
+    a = await employee_service.all(db,status)
 
     return a
 
@@ -85,3 +86,5 @@ async def deleteEmployee(
     _current_user: TokenPayload = Depends(get_current_user),
 ):
     return await employee_service.deleteEmployee(employee_id, db)
+
+
